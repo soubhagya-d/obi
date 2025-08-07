@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+
+<h2>Order Summary</h2>
+
+    <h2>📑 Grouped Orders</h2>
+
+    <div class="accordion" id="ordersAccordion">
+        {% for customer, data in grouped_orders.items() %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-{{ loop.index }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ loop.index }}" aria-expanded="false">
+                    {{ customer }} — ₹{{ data.grand_total }}
+                </button>
+            </h2>
+            <div id="collapse-{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#ordersAccordion">
+                <div class="accordion-body">
+                    <table class="table table-sm table-bordered mb-2">
+                        <thead>
+                            <tr><th>SKU</th><th>Qty</th><th>SP</th><th>Total</th><th>Payment</th><th>Time</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for order in data.orders %}
+                            <tr>
+                                <td>{{ order.sku }}</td>
+                                <td>{{ order.qty }}</td>
+                                <td>₹{{ order.sp }}</td>
+                                <td>₹{{ order.total }}</td>
+                                <td>{{ order.payment_mode }}</td>
+                                <td>{{ order.timestamp }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <strong>Grand Total: ₹{{ data.grand_total }}</strong>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+
+{% endblock %}

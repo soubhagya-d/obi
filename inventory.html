@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Inventory{% endblock %}
+
+{% block content %}
+
+    <h2>📦 Inventory</h2>
+
+    <!-- Search bar -->
+    <input type="text" class="form-control mb-3" id="search" placeholder="Search by Brand or SKU">
+
+    <!-- Product list -->
+    <div id="product-list">
+        {% for p in products %}
+        <div class="product-tile row align-items-center" data-brand="{{ p[0]|lower }}" data-sku="{{ p[2]|lower }}">
+            <div class="col-6">
+                <h5>{{ p[0] }} - {{ p[2] }}</h5>
+                <p class="mb-1">Category: {{ p[1] }}</p>
+                <p class="mb-1">MRP: ₹{{ p[3] }}</p>
+                <p class="mb-1">Selling Price: ₹{{ p[4] }}</p>
+                <p class="mb-1">In Stock: {{ p[5] }}</p>
+            </div>
+            <div class="col-3 text-end">
+                <form method="POST" action="/add_to_cart" class="d-flex align-items-center">
+                    <input type="hidden" name="sku" value="{{ p[2] }}">
+                    <input type="number" name="qty" min="1" class="form-control quantity-box me-2" placeholder="Qty" required>
+                    <button type="submit" class="btn btn-primary btn-sm">Add</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Floating cart button -->
+    <a href="/cart" class="btn btn-warning position-fixed bottom-0 end-0 m-4 shadow">
+        🛒 Cart ({{ cart|length }})
+    </a>
+
+    <!-- Live search script -->
+    <script>
+        const searchInput = document.getElementById("search");
+        const productList = document.getElementById("product-list").children;
+
+        searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            Array.from(productList).forEach(product => {
+                const brand = product.dataset.brand;
+                const sku = product.dataset.sku;
+                const match = brand.includes(query) || sku.includes(query);
+                product.style.display = match ? "flex" : "none";
+            });
+        });
+    </script>
+
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Manage Inventory{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">📦 Manage Inventory</h2>
+
+<!-- Add New SKU -->
+<div class="mb-5 p-3 border rounded bg-light">
+    <h5>Add New SKU</h5>
+    <form method="POST">
+        <input type="hidden" name="action" value="add-new">
+        <div class="row g-2">
+            <div class="col-md-2">
+                <input type="text" name="brand" class="form-control" placeholder="Brand" required>
+            </div>
+            <div class="col-md-2">
+                <input type="text" name="category" class="form-control" placeholder="Category" required>
+            </div>
+            <div class="col-md-2">
+                <input type="text" name="sku" class="form-control" placeholder="SKU" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" step="0.01" name="mrp" class="form-control" placeholder="MRP" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" step="0.01" name="sp" class="form-control" placeholder="Final SP" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="qty" class="form-control" placeholder="Quantity" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">➕ Add SKU</button>
+    </form>
+</div>
+
+<!-- Update Existing SKU -->
+<div class="mb-5 p-3 border rounded bg-light">
+    <h5>Update Quantity of Existing SKU</h5>
+    <form method="POST">
+        <input type="hidden" name="action" value="update-existing">
+        <div class="row g-2">
+            <div class="col-md-3">
+                <select name="update_brand" id="update_brand" class="form-select" required>
+                    <option value="">Select Brand</option>
+                    {% for brand in brands %}
+                        <option value="{{ brand }}">{{ brand }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="update_sku" id="update_sku" class="form-select" required>
+                    <option value="">Select SKU</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="number" name="update_qty" class="form-control" placeholder="Add Quantity" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-warning mt-3">🔁 Update Quantity</button>
+    </form>
+</div>
+
+<!-- Inventory Table -->
+<div class="mt-5">
+    <h5>Current Inventory</h5>
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Brand</th>
+                <th>Category</th>
+                <th>SKU</th>
+                <th>MRP</th>
+                <th>Final SP</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in inventory_data %}
+            <tr>
+                <td>{{ item[0] }}</td>
+                <td>{{ item[1] }}</td>
+                <td>{{ item[2] }}</td>
+                <td>{{ item[3] }}</td>
+                <td>{{ item[4] }}</td>
+                <td>{{ item[5] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const brandSkuMap = {{ brand_sku_map | tojson }};
+    const brandSelect = document.getElementById("update_brand");
+    const skuSelect = document.getElementById("update_sku");
+
+    brandSelect.addEventListener("change", function () {
+        const selectedBrand = this.value;
+        skuSelect.innerHTML = '<option value="">Select SKU</option>';
+
+        if (brandSkuMap[selectedBrand]) {
+            brandSkuMap[selectedBrand].forEach(function (sku) {
+                const option = document.createElement("option");
+                option.value = sku;
+                option.textContent = sku;
+                skuSelect.appendChild(option);
+            });
+        }
+    });
+</script>
+
+{% endblock %}

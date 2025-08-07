@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+
+<h2>🛒 Cart</h2>
+
+{% if cart %}
+<table class="table table-bordered">
+    <thead>
+        <tr><th>SKU</th><th>Qty</th><th>Price</th><th>Total</th><th></th></tr>
+    </thead>
+    <tbody>
+        {% for sku, item in cart.items() %}
+        <tr>
+            <td>{{ sku }}</td>
+            <td>{{ item.qty }}</td>
+            <td>₹{{ item.sp }}</td>
+            <td>₹{{ item.sp * item.qty }}</td>
+            <td><a href="/remove_from_cart/{{ sku }}" class="btn btn-sm btn-danger">Remove</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4>Grand Total: ₹{{ grand_total }}</h4>
+
+<form method="POST" action="/submit_order" class="mt-4">
+    <div class="mb-2">
+        <input name="name" class="form-control" placeholder="Customer Name" required>
+    </div>
+    <div class="mb-2">
+        <input name="mobile" class="form-control" placeholder="Mobile Number" required>
+    </div>
+    <div class="mb-3">
+        <select name="payment" class="form-select" required>
+            <option value="">Select Payment Mode</option>
+            <option>Cash</option>
+            <option>UPI - Anu</option>
+            <option>UPI - Neelsh</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">✅ Submit Order</button>
+</form>
+
+{% else %}
+<p>No items in cart.</p>
+{% endif %}
+
+</body>
+</html>
+{% endblock %}
