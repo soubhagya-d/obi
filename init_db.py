@@ -5,6 +5,7 @@ import os
 DB_PATH = 'inventory.db'
 CSV_PATH = 'inventory.csv'  # Change if your file has a different name
 
+
 # Step 1: Create DB and Tables
 def create_tables(conn):
     cursor = conn.cursor()
@@ -34,8 +35,11 @@ def create_tables(conn):
         payment_mode TEXT NOT NULL
     )
     ''')
+    cursor.execute('DELETE FROM inventory')
+    cursor.execute('DELETE FROM orders')
 
     conn.commit()
+
 
 # Step 2: Import CSV into inventory
 def import_inventory_from_csv(conn, csv_path):
@@ -48,17 +52,13 @@ def import_inventory_from_csv(conn, csv_path):
         inserted, skipped = 0, 0
         for row in reader:
             try:
-                conn.execute('''
+                conn.execute(
+                    '''
                     INSERT OR IGNORE INTO inventory (brand, category, sku, mrp, finalsp, quantity)
                     VALUES (?, ?, ?, ?, ?, ?)
-                ''', (
-                    row['Brand'].strip(),
-                    row['Category'].strip(),
-                    row['SKU'].strip(),
-                    float(row['MRP']),
-                    float(row['FinalSP']),
-                    int(row['Quantity'])
-                ))
+                ''', (row['Brand'].strip(), row['Category'].strip(),
+                      row['SKU'].strip(), float(row['MRP']),
+                      float(row['FinalSP']), int(row['Quantity'])))
                 inserted += 1
             except Exception as e:
                 print(f"⚠️ Skipped row with SKU {row['SKU']}: {e}")
@@ -67,9 +67,10 @@ def import_inventory_from_csv(conn, csv_path):
         conn.commit()
         print(f"✅ Imported {inserted} items. Skipped {skipped}.")
 
+
 # Main Execution
 if __name__ == '__main__':
     conn = sqlite3.connect(DB_PATH)
     create_tables(conn)
-    import_inventory_from_csv(conn, CSV_PATH)
+    #import_inventory_from_csv(conn, CSV_PATH)
     conn.close()

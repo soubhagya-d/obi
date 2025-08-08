@@ -1,0 +1,19 @@
+modules = ["web", "python-3.12"]
+
+[nix]
+channel = "stable-25_05"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[workflows]
+
+[[workflows.workflow]]
+name = "refresh db"
+mode = "sequential"
+author = 46114555
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python init_db.py"

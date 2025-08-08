@@ -22,6 +22,14 @@ body {
     border-radius: 8px;
 }
 
-.table th, .table td {
+.table th,
+.table td {
     vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+    .qty-input {
+        max-width: 80px;
+        font-size: 1.1rem;
+    }
 }

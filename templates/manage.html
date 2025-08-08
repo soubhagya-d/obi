@@ -44,7 +44,7 @@
                 <select name="update_brand" id="update_brand" class="form-select" required>
                     <option value="">Select Brand</option>
                     {% for brand in brands %}
-                        <option value="{{ brand }}">{{ brand }}</option>
+                    <option value="{{ brand }}">{{ brand }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -60,6 +60,19 @@
         <button type="submit" class="btn btn-warning mt-3">🔁 Update Quantity</button>
     </form>
 </div>
+
+<h5>Upload CSV to Update Inventory</h5>
+<form action="{{ url_for('upload_csv') }}" method="POST" enctype="multipart/form-data" class="mb-4">
+    <div class="mb-3">
+        <input type="file" name="csv_file" accept=".csv" class="form-control" required>
+        <div class="form-text">
+            CSV should have the following columns: <br>
+            <code>brand, category, sku, mrp, finalsp, quantity</code>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload & Update</button>
+</form>
+</h5>
 
 <!-- Inventory Table -->
 <div class="mt-5">
@@ -91,7 +104,7 @@
 </div>
 
 <script>
-    const brandSkuMap = {{ brand_sku_map | tojson }};
+    const brandSkuMap = {{brand_sku_map | tojson }};
     const brandSelect = document.getElementById("update_brand");
     const skuSelect = document.getElementById("update_sku");
 
